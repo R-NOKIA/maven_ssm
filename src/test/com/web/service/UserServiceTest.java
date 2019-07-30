@@ -15,7 +15,7 @@ public class UserServiceTest {
 
     @Test
     public void world() throws Exception{
-        Users users= userService.getUserByName("11");
-        System.out.println(users.getId());
+        Users users= userService.getUserByName("HSR");
+        System.out.println(users.getUser_id());
     }
 }

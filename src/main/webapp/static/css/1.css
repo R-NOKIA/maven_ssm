@@ -1,0 +1,43 @@
+body{
+	background: #e4e1dc;
+	color: #D5D6E2;
+	font-weight: 500;
+	font-size: 1.05em;
+	font-family: "Microsoft YaHei","Segoe UI", "Lucida Grande", Helvetica, Arial,sans-serif;
+}
+a{ color: rgba(255, 255, 255, 0.6);outline: none;text-decoration: none;-webkit-transition: 0.2s;transition: 0.2s;}
+a:hover,a:focus{color:#74777b;text-decoration: none;}
+.htmleaf-container{
+	margin: 0 auto;
+}
+
+#trans3DDemo1 {
+	position:relative;
+	display:inline-block;
+	width:400px;
+	height:500px;
+	top:-100px;
+	/*top:250px;
+	margin:0px auto 0px auto;*/
+	margin-top: 450px;
+
+}
+.x
+{
+	float:left;
+	margin-left: -800px;
+}
+
+#trans3DBoxes1 div {
+	position:absolute;
+	width:248px;
+	height:248px;
+	padding:0;
+	
+	background:url(../images1/y.jpg);
+	border:solid 2px #FFF;
+	display:block;
+	text-align:center;
+	font-size:36px;
+	font-weight:bold;
+}

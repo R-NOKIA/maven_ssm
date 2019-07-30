@@ -8,23 +8,35 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service("userService")
+@Service("UserService")
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
     @Override
     public int insertUser(Users users) {
-        return 0;
+        if(userDao.insertUser(users)>0) {
+            return 1;
+        }
+        else
+            return 0;
     }
 
     @Override
-    public int deleteUser(String id) {
-        return 0;
+    public int deleteUser(Integer user_id) {
+        if(userDao.deleteUser(user_id)>0) {
+            return 1;
+        }
+        else
+            return 0;
     }
 
     @Override
     public int updateUser(Users users) {
-        return 0;
+        if(userDao.updateUser(users)>0) {
+            return 1;
+        }
+        else
+            return 0;
     }
 
     @Override
@@ -34,6 +46,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Users> getUsers() {
-        return null;
+        return userDao.getUsers();
     }
+
+    @Override
+    public Users getuserrightbyid(Integer user_id) {
+        return userDao.getuserrightbyid(user_id);
+    }
+
+    @Override
+    public Users getuserorderbyid(Integer user_id) {
+        return userDao.getuserorderbyid(user_id);
+    }
+
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="freemarkerConfig"
+          class="com.web.Unitl.Freemaker">
+        <!-- 模版位置，这里配置了下面就不用配了 -->
+        <property name="templateLoaderPath" value="/WEB-INF/template" />
+        <property name="freemarkerSettings"><!-- 一些设置 -->
+            <props>
+                <prop key="template_update_delay">0</prop>
+                <prop key="default_encoding">UTF-8</prop>
+                <prop key="number_format">0.##########</prop>
+                <prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+                <prop key="classic_compatible">true</prop>
+                <prop key="template_exception_handler">ignore</prop>
+                <prop key="auto_import">
+                    <!-- 自动装载，引入Freemarker，用于Freemarker Macro引入 -->
+                    /top.ftl as _top,
+                    /left.ftl as _left
+                </prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- freeMarker视图解析器 -->
+    <bean id="freemarkerViewResolver"
+          class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView"
+        />
+        <property name="viewNames" value="*.ftl" />
+        <property name="contentType" value="text/html; charset=utf-8" />
+        <property name="cache" value="true" />
+        <property name="suffix" value="" />
+        <!--    作用百度即可
+            <property name="exposeRequestAttributes" value="true" />
+            <property name="exposeSessionAttributes" value="true" />
+            <property name="exposeSpringMacroHelpers" value="true" />
+        -->
+        <!-- 视图先走这个freemarker的，再走原始的 -->
+        <property name="order" value="0" />
+    </bean>
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="order" value="2"></property>
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+    <!--    <mvc:resources location="/static/" mapping="/static/**"/>-->
+
+</beans>

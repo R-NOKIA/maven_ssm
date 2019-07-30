@@ -1,14 +1,53 @@
 package com.web.model;
 
-public class Users {
-    private int id;
+import org.springframework.stereotype.Component;
 
-    public int getId() {
-        return id;
+import java.util.List;
+
+@Component
+public class Users {
+    private Integer user_id;
+    private String username;
+    private String password;
+    private String name;
+    private String sex;
+    private String telphone;
+    private String email;
+    private String nickname;
+    private String homeplace;
+    private Rights rights;
+    private List<Orders> orders;
+
+    @Override
+    public String toString() {
+        return "Users{" +
+                "user_id=" + user_id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", sex='" + sex + '\'' +
+                ", telphone='" + telphone + '\'' +
+                ", email='" + email + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", homeplace='" + homeplace + '\'' +
+                ", rights=" + rights +
+                ", orders=" + orders +
+                '}';
+    }
+    public String getHomeplace() {
+        return homeplace;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setHomeplace(String homeplace) {
+        this.homeplace = homeplace;
+    }
+
+    public Integer getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
     }
 
     public String getUsername() {
@@ -27,23 +66,59 @@ public class Users {
         this.password = password;
     }
 
-    private String username;
-
-    public Users() {
-
+    public String getSex() {
+        return sex;
     }
 
-    public Users(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
-    public Users(int id, String username, String password) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
+    public String getTelphone() {
+        return telphone;
     }
 
-    private String password;
+    public void setTelphone(String telphone) {
+        this.telphone = telphone;
+    }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Rights getRights() {
+        return rights;
+    }
+
+    public void setRights(Rights rights) {
+        this.rights = rights;
+    }
+
+    public List<Orders> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Orders> orders) {
+        this.orders = orders;
+    }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.web.dao.Rightdao">
+
+    <insert id="insertright" parameterType="com.web.model.Rights">
+        insert into rights (right_id,user_id,add_state,select_state,delete_state,update_state)values(#{right_id},#{user_id},#{add_state},#{select_state},#{delete_state},#{update_state})
+    </insert>
+
+    <delete id="deleteright" parameterType="Integer" >
+        delete from rights where right_id=#{right_id}
+    </delete>
+
+    <update id="updateright" parameterType="com.web.model.Rights">
+      update rights 
+      <set>
+          <if test="add_state != null">
+              add_state=#{add_state},
+          </if>
+          <if test="select_state != null">
+              select_state=#{select_state},
+          </if>
+          <if test="delete_state != null">
+              delete_state=#{delete_state},
+          </if>
+          <if test="update_state != null">
+              update_state=#{update_state},
+          </if>
+      </set>
+        where right_id=#{right_id}
+    </update>
+
+    <select id="getrightByuserid" resultType="com.web.model.Rights" parameterType="Integer">
+        SELECT * FROM rights WHERE user_id=#{user_id}
+    </select>
+
+    <select id="getrightByrightid" resultType="com.web.model.Rights" parameterType="Integer">
+        SELECT * FROM rights WHERE right_id=#{right_id}
+    </select>
+</mapper>
