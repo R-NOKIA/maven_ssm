@@ -8,26 +8,35 @@
     <!--配置包扫描器-->
     <context:component-scan base-package="com.web.controller"></context:component-scan>
     <!--配置注解驱动-->
-<!--    <mvc:annotation-driven></mvc:annotation-driven>-->
-    <!--视图解析器-->
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/jsp/"></property>
-        <property name="suffix" value=".jsp"></property>
-    </bean>
+    <!--<mvc:annotation-driven></mvc:annotation-driven>-->
+
+
+    <mvc:default-servlet-handler/>
+
+    <!--&lt;!&ndash;2.静态资源放行&ndash;&gt;-->
+    <!--<mvc:resources location="/static/images/" mapping="/images/**"/>-->
+    <!--<mvc:resources location="/static/js/" mapping="/js/**"/>-->
+    <!--<mvc:resources location="/static/css/" mapping="/css/**"/>-->
+    <!--<mvc:resources location="static/dist" mapping="/dist/**"/>-->
+    <!--<mvc:resources location="static/fonts" mapping="/fonts/**"/>-->
+    <!--<mvc:resources location="static/lib" mapping="/lib/**"/>-->
     <!--导入外部文件-->
     <context:property-placeholder location="classpath:jdbc.properties"></context:property-placeholder>
     <!--配置数据源，使用的是c3p0数据源-->
-    <bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-        <property name="driverClass" value="${jdbc.driver}"></property>
-        <property name="jdbcUrl" value="${jdbc.url}"></property>
-        <property name="user" value="${jdbc.username}"></property>
+    <bean name="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
         <property name="password" value="${jdbc.password}"></property>
 
-        <property name="maxPoolSize" value="30"></property>
-        <property name="autoCommitOnClose" value="false"></property>
-        <property name="minPoolSize" value="3"></property>
-        <property name="checkoutTimeout" value="3000"></property>
-        <property name="acquireRetryAttempts" value="2"></property>
+        <property name="maxActive" value="30"></property>
+        <property name="initialSize" value="1"></property>
+        <property name="minIdle" value="3"></property>
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000" />
     </bean>
 <!-- 配置mybatis的sqlsessionfactory-->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -38,7 +47,7 @@
 <!--        扫描model中的实体 -->
         <property name="typeAliasesPackage" value="com.web.model"></property>
 <!--        自动扫描mapper中的xml文件-->
-        <property name="mapperLocations" value="classpath:mapper/*.xml"></property>
+        <property name="mapperLocations" value="classpath*:mapper/**/*Mapper.xml"></property>
     </bean>
 <!--DAO接口所在包名 spring会自动查找以下类并注入到spring容器中-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
@@ -61,5 +70,60 @@
 <!--        3、不是所有的方法都需要事物，如只有一条修改记录操作-->
 <!--    &ndash;&gt;-->
 <!--    <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>-->
+    <bean id="securityManager" class="org.apache.shiro.mgt.DefaultSecurityManager">
+        <property name="realm" ref="shiroDbRealm" />
+        <property name="cacheManager" ref="cacheManager" />
+    </bean>
+
+    <!-- 項目自定义的Realm -->
+    <bean id="shiroDbRealm" class="com.web.Unitl.MyRealm">
+        <property name="cacheManager" ref="cacheManager" />
+    </bean>
+    <!-- 静态注入，相当于调用SecurityUtils.setSecurityManager(securityManager) -->
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager"/>
+        <property name="arguments" ref="securityManager"/>
+    </bean>
+
+    <!-- Shiro Filter -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager" />
+        <!--        <property name="loginUrl" value="/index.jsp" />-->
+        <!--        <property name="successUrl" value="/view/index.jsp" />-->
+        <!--        <property name="unauthorizedUrl" value="/error/noperms.jsp" />-->
+        <property name="filterChainDefinitions">
+            <value>
+                /index.html = authc
+                /login.html = anon
+                /tologin.html = anon
+                /logout.html = anon
+                /** = authc
+            </value>
+        </property>
+    </bean>
+
+    <!-- 用户授权信息Cache -->
+    <bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />
+
+    <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+    <!-- AOP式方法级权限检查 -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor">
+        <property name="proxyTargetClass" value="true" />
+    </bean>
+
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager" />
+    </bean>
+    <!--    解析hashmap-->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
 
 </beans>
